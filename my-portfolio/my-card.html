@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abankwah Joseph - Exceptional Contact Card</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #1a202c; /* bg-gray-900 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            overflow: hidden; /* Hide overflow from animations, especially for body */
+        }
+
+        /* ------------------ Card Flip & Entry Animations ------------------ */
+
+        /* Container for 3D Perspective - Essential for the flip effect */
+        .card-perspective {
+            perspective: 1000px; /* Defines the depth of the 3D space */
+            width: 350px; /* Fixed width for the card */
+            height: 580px; /* Fixed height for the card */
+            /* Added min-width/height to ensure it doesn't collapse on smaller content */
+            min-width: 300px;
+            min-height: 500px;
+        }
+
+        /* Main Card Container - Handles the flip transformation */
+        .exceptional-card-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s ease-in-out; /* Smooth flip animation */
+            transform-style: preserve-3d; /* Allows child elements to be positioned in 3D space */
+            border-radius: 0.75rem; /* Matches Tailwind's rounded-xl */
+            /* Initial state for fade-in animation */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInSlideUp 0.8s forwards ease-out 0.2s; /* Delay for smoother entry */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Base shadow for the card */
+        }
+
+        /* Class added by JavaScript to trigger the flip */
+        .exceptional-card-container.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Keyframe for card entry animation */
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Wrapper for front and back sides - Ensures they cover the whole card */
+        .card-inner-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .card-inner-wrapper.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Front and Back Faces of the Card */
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #2d3748; /* bg-gray-800 */
+            border-radius: inherit; /* Inherit border-radius from parent */
+            backface-visibility: hidden; /* Hides the back of the element when not facing the user */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box; /* Include padding in element's total width and height */
+            overflow: hidden; /* Contains the pseudo-elements (background shapes) */
+            z-index: 1; /* Ensures content is above the gradient overlay */
+        }
+
+        .back {
+            transform: rotateY(180deg); /* Initially rotated to be on the back side */
+            justify-content: center; /* Center content vertically */
+            background-color: #2d3748; /* Same background as front */
+            /* Specific styles for back if needed, e.g., different glow */
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.2); /* Subtle green glow for WhatsApp side */
+        }
+
+        /* ------------------ Animated Gradient Border ------------------ */
+
+        /* This div creates the animated gradient border effect */
+        .card-border-gradient-overlay {
+            position: absolute;
+            top: -3px; /* Slightly outside the card for border effect */
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(60deg, #3b82f6, #6b46c1, #8B5CF6, #3b82f6, #6b46c1); /* Blue to Purple gradient, repeated for smooth loop */
+            border-radius: inherit; /* Inherit border-radius from parent */
+            z-index: -2; /* Ensure it's behind the actual card content */
+            background-size: 300% 300%; /* Make gradient larger than container for movement */
+            animation: gradient-animation 8s infinite linear; /* Loop animation, slightly slower */
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ------------------ Background Shapes (Blobs) ------------------ */
+
+        /* Creative Background Shapes (Pseudo-elements) - apply to .front for now */
+        .front::before,
+        .front::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(50px);
+            z-index: -1; /* Behind content */
+            animation: blob-float 15s infinite ease-in-out alternate;
+        }
+
+        .front::before {
+            width: 150px;
+            height: 150px;
+            top: -20px;
+            left: -30px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15), transparent 70%); /* Blue glow */
+            opacity: 0.7;
+        }
+
+        .front::after {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -60px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%); /* Purple glow */
+            opacity: 0.6;
+            animation-delay: 2s; /* Offset animation */
+        }
+
+        @keyframes blob-float {
+            0% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(10px, -15px) scale(1.05); }
+            50% { transform: translate(0, 10px) scale(0.95); }
+            75% { transform: translate(-10px, -5px) scale(1.02); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* ------------------ Element Specific Styles & Effects ------------------ */
+
+        /* Profile Picture Hover Effect */
+        .profile-image-wrapper {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border-radius: 50%; /* Ensures the shadow follows the circle */
+            display: inline-block; /* Helps with shadow on circle */
+            box-shadow: 0 0 0 rgba(59, 130, 246, 0.0); /* Initial subtle shadow */
+        }
+        .profile-image-wrapper:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.7); /* Blue glow */
+        }
+        .profile-image {
+            object-fit: cover;
+        }
+
+        /* Social Icon Hover Effect */
+        .social-icon-link {
+            transition: transform 0.2s ease-in-out, color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
+        }
+        .social-icon-link:hover {
+            transform: scale(1.2) translateY(-3px); /* Lift and scale */
+            color: #60a5fa; /* blue-400 */
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.8); /* Subtle icon glow */
+        }
+
+        /* Button Pulsating Glow */
+        .connect-button {
+            animation: pulse-glow 2s infinite alternate;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); /* Initial subtle glow */
+            transition: all 0.3s ease-in-out;
+        }
+        .connect-button:hover {
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6), 0 0 25px rgba(59, 130, 246, 0.7); /* Stronger glow on hover */
+            transform: scale(1.02); /* Slight scale on hover */
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            }
+            100% {
+                transform: scale(1.01);
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+            }
+        }
+
+        /* WhatsApp QR Code Styles */
+        .whatsapp-qr-code {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background-color: #fff; /* Ensure it stands out */
+            padding: 0.5rem;
+            object-fit: contain; /* Ensure QR code fits without cropping */
+        }
+
+        .whatsapp-link-text {
+            color: #64a1f4; /* A light blue for links */
+        }
+
+        /* Truncate long email */
+        .truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+
+    <div class="card-perspective">
+        <div id="exceptionalCard" class="exceptional-card-container">
+            <div class="card-border-gradient-overlay"></div>
+
+            <div id="cardInner" class="card-inner-wrapper">
+                <div class="front">
+                    <div class="profile-image-wrapper border-4 border-blue-500 shadow-lg mb-6">
+                        <img src="image/me.png" alt="Abankwah Joseph" class="profile-image w-32 h-32 rounded-full">
+                    </div>
+
+                    <h2 class="text-3xl font-extrabold text-white mb-2 leading-tight">Abankwah Joseph</h2>
+                    <p class="text-blue-400 text-lg font-medium mb-6">Creative Web Developer & Designer</p>
+
+                    <div class="space-y-4 w-full">
+                        <div class="flex items-center justify-center text-gray-300">
+                            <i class="fas fa-phone-alt text-blue-500 text-xl mr-3"></i>
+                            <a href="tel:+233552150758" class="hover:text-blue-400 transition duration-300 font-semibold">+233 552150758</a>
+                        </div>
+                        <div class="flex items-center justify-center text-gray-300">
+                            <i class="fas fa-envelope text-blue-500 text-xl mr-3"></i>
+                            <a href="mailto:josephabankwah36@gmail.com" class="hover:text-blue-400 transition duration-300 font-semibold truncate">josephabankwah36@gmail.com</a>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-6 mt-8 pt-6 border-t border-gray-700 w-full justify-center">
+                        <a href="https://www.instagram.com/jo_seph4564?igsh=NHA0ZTJpbTNoczFt&utm_source=qr" target="_blank" aria-label="Instagram Profile" class="social-icon-link text-gray-300 text-3xl">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/1AmmR79cJE/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Profile" class="social-icon-link text-gray-300 text-3xl">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" target="_blank" aria-label="LinkedIn Profile" class="social-icon-link text-gray-300 text-3xl">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+
+                    <a href="mailto:josephabankwah36@gmail.com" class="connect-button mt-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full border border-blue-600 hover:border-blue-700 uppercase tracking-wider">
+                        LET'S CONNECT
+                    </a>
+                </div>
+
+                <div class="back">
+                    <img src="image/qrc.png" alt="WhatsApp QR Code" class="whatsapp-qr-code">
+                    <p class="text-gray-300 mb-2 text-lg font-medium">Scan to chat on <a href="https://wa.me/233552150758" target="_blank" class="whatsapp-link-text hover:underline">WhatsApp</a></p>
+                    <p class="text-sm text-gray-500 mt-2">(Double-click to flip back)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cardInner = document.getElementById('cardInner');
+        cardInner.addEventListener('dblclick', () => {
+            cardInner.classList.toggle('flipped');
+        });
+    </script>
+
+</body>
+</html>
